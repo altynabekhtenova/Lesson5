@@ -12,9 +12,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import static java.lang.System.*;
+
 public class SeleniumWebDriverManagerTests {
 
-    private WebDriver driver;
+    public WebDriver driver;
 
     @BeforeEach
     public void setUp() throws InterruptedException {
