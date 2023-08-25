@@ -5,9 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -21,18 +19,21 @@ public class SeleniumWebDriverManagerTests {
     @BeforeEach
     public void setUp() throws InterruptedException {
 
-        String browser = System.getProperty("browser");
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
 
-        if (browser.equals("chrome")) {
-            WebDriverManager.chromedriver().setup();
-            driver = new ChromeDriver();
-        } else if (browser.equals("firefox")) {
-            WebDriverManager.firefoxdriver().setup();
-            driver = new FirefoxDriver();
-        } else if (browser.equals("edge")) {
-            WebDriverManager.edgedriver().setup();
-            driver = new EdgeDriver();
-        }
+//        String browser = System.getProperty("browser");
+
+//        if (browser.equals("chrome")) {
+//            WebDriverManager.chromedriver().setup();
+//            driver = new ChromeDriver();
+//        } else if (browser.equals("firefox")) {
+//            WebDriverManager.firefoxdriver().setup();
+//            driver = new FirefoxDriver();
+//        } else if (browser.equals("edge")) {
+//            WebDriverManager.edgedriver().setup();
+//            driver = new EdgeDriver();
+//        }
 
         String url = "https://demoqa.com/automation-practice-form";
 
@@ -47,15 +48,18 @@ public class SeleniumWebDriverManagerTests {
 
 
         WebElement firstName = driver.findElement(By.cssSelector("input[id='firstName']"));
-        firstName.sendKeys("Altyna");
+        String userFirstName = "Altyna";
+        firstName.sendKeys(userFirstName);
         Thread.sleep(2000);
 
         WebElement lastName = driver.findElement(By.cssSelector("input[id='lastName']"));
-        lastName.sendKeys("Bekhtenova");
+        String userLastName = "Bekhtenova";
+        lastName.sendKeys(userLastName);
         Thread.sleep(2000);
 
         WebElement email = driver.findElement(By.cssSelector("input[id='userEmail']"));
-        email.sendKeys("altusha.pin-up@mail.ru");
+        String userEmail = "altusha.pin-up@mail.ru";
+        email.sendKeys(userEmail);
         Thread.sleep(2000);
 
         WebElement male = driver.findElement(By.cssSelector("label[for='gender-radio-1']"));
@@ -63,7 +67,8 @@ public class SeleniumWebDriverManagerTests {
         Thread.sleep(2000);
 
         WebElement phone = driver.findElement(By.cssSelector("input[id='userNumber']"));
-        phone.sendKeys("8-888-888-88-88");
+        String userPhone = "8-888-888-88-88";
+        phone.sendKeys(userPhone);
         Thread.sleep(2000);
 
         WebElement dateOfBirth = driver.findElement(By.cssSelector("input[id='dateOfBirthInput']"));
@@ -91,7 +96,8 @@ public class SeleniumWebDriverManagerTests {
         Thread.sleep(1000);
 
         WebElement subject = driver.findElement(By.className("subjects-auto-complete__placeholder css-1wa3eu0-placeholder"));
-        subject.sendKeys("Geology");
+        String userSubject = "Geology";
+        subject.sendKeys(userSubject);
         Thread.sleep(2000);
 
         WebElement hobby = driver.findElement(By.cssSelector("label[for='hobbies-checkbox-2']"));
@@ -99,22 +105,44 @@ public class SeleniumWebDriverManagerTests {
         Thread.sleep(2000);
 
         WebElement currentAddress = driver.findElement(By.cssSelector("textarea[id='currentAddress']"));
-        currentAddress.sendKeys("Novosibirsk");
+        String userCurrentAddress = "Novosibirsk";
+        currentAddress.sendKeys(userCurrentAddress);
         Thread.sleep(2000);
 
-        WebElement state = driver.findElement(By.className("css-19bqh2r"));
-        state.click();
-        Thread.sleep(2000);
+        WebElement state = driver.findElement(By.id("react-select-3-input"));
+        String userState = "NCR";
+        state.sendKeys(userState);
+        state.sendKeys(Keys.ENTER);
 
+        WebElement city = driver.findElement(By.id("react-select-4-input"));
+        String userCity = "Delhi";
+        city.sendKeys(userCity);
+        city.sendKeys(Keys.ENTER);
 
-        WebElement submit = driver.findElement(By.cssSelector("button[id='submit']"));
-        submit.click();
-        Thread.sleep(2000);
+//        JavascriptExecutor js;
+//        js.executeScript("window.scrollTo()");
+//
+//        WebElement submit = driver.findElement(By.cssSelector("button[id='submit']"));
+//        submit.click();
+//        Thread.sleep(2000);
 
+        Assertions.assertEquals(userFirstName + " " + userLastName,
+        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr/td[2]")));
 
+        Assertions.assertEquals(userEmail,
+        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[2]/td[2]")));
 
-//        Assertions.assertEquals("","");
+        Assertions.assertEquals(userPhone,
+        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[4]/td[2]")));
 
+        Assertions.assertEquals(userSubject,
+        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[6]/td[2]")));
+
+        Assertions.assertEquals(userCurrentAddress,
+        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[9]/td[2]")));
+
+        Assertions.assertEquals(userState + " " + userCity,
+        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[10]/td[2]")));
 
         driver.quit();
     }
