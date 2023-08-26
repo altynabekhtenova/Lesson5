@@ -58,6 +58,7 @@ public class ReqresTests {
 
         assertEquals(201, statusCode, "Unexpected status code");
     }
+
     @Test
     public void registrationSuccessful() {
         Map<String, String> body = new HashMap<>();
@@ -74,7 +75,7 @@ public class ReqresTests {
         System.out.println("Status code: " + statusCode);
 
         assertEquals(200, statusCode, "Unexpected status code");
-        }
+    }
 
     @Test
     public void updatePut() {
@@ -109,6 +110,7 @@ public class ReqresTests {
         Assertions.assertEquals("morpheus", response.get("name").toString());
         Assertions.assertEquals("zion resident", response.get("job").toString());
     }
+
     @Test
     public void delete() {
         Response response = RestAssured
