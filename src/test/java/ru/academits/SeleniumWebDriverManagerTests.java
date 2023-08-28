@@ -10,11 +10,13 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.io.File;
+
 import static java.lang.System.*;
 
 public class SeleniumWebDriverManagerTests {
 
-    public WebDriver driver;
+    private WebDriver driver;
 
     @BeforeEach
     public void setUp() throws InterruptedException {
@@ -103,6 +105,10 @@ public class SeleniumWebDriverManagerTests {
         WebElement hobby = driver.findElement(By.cssSelector("label[for='hobbies-checkbox-2']"));
         hobby.click();
         Thread.sleep(2000);
+
+        WebElement picture = driver.findElement(By.cssSelector("input[id='uploadPicture']"));
+        File image = new File("/images.jpg");
+        picture.sendKeys(image.getAbsolutePath());
 
         WebElement currentAddress = driver.findElement(By.cssSelector("textarea[id='currentAddress']"));
         String userCurrentAddress = "Novosibirsk";
