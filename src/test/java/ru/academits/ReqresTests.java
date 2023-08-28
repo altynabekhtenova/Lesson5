@@ -1,6 +1,8 @@
 package ru.academits;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.http.Cookies;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
@@ -46,6 +48,7 @@ public class ReqresTests {
         body.put("job", "leader");
         Response response = RestAssured
                 .given()
+                .contentType(ContentType.JSON)
                 .body(body)
                 .when()
                 .post("https://reqres.in/api/users")
@@ -66,10 +69,13 @@ public class ReqresTests {
         body.put("password", "pistol");
         Response response = RestAssured
                 .given()
+                .contentType(ContentType.JSON)
                 .body(body)
                 .when()
                 .post("https://reqres.in/api/register")
                 .andReturn();
+
+        response.prettyPrint();
 
         int statusCode = response.statusCode();
         System.out.println("Status code: " + statusCode);
@@ -84,6 +90,7 @@ public class ReqresTests {
         body.put("job", "zion resident");
         JsonPath response = RestAssured
                 .given()
+                .contentType(ContentType.JSON)
                 .body(body)
                 .when()
                 .put("https://reqres.in/api/users/2")
@@ -101,6 +108,7 @@ public class ReqresTests {
         body.put("job", "zion resident");
         JsonPath response = RestAssured
                 .given()
+                .contentType(ContentType.JSON)
                 .body(body)
                 .when()
                 .patch("https://reqres.in/api/users/3")
