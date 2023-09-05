@@ -1,6 +1,7 @@
 package ru.academits;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,8 +10,11 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.time.Duration;
 
 import static java.lang.System.*;
 
@@ -24,18 +28,18 @@ public class SeleniumWebDriverManagerTests {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
 
-//        String browser = System.getProperty("browser");
+        String browser = System.getProperty("browser");
 
-//        if (browser.equals("chrome")) {
-//            WebDriverManager.chromedriver().setup();
-//            driver = new ChromeDriver();
-//        } else if (browser.equals("firefox")) {
-//            WebDriverManager.firefoxdriver().setup();
-//            driver = new FirefoxDriver();
-//        } else if (browser.equals("edge")) {
-//            WebDriverManager.edgedriver().setup();
-//            driver = new EdgeDriver();
-//        }
+        if (browser.equals("chrome")) {
+            WebDriverManager.chromedriver().setup();
+            driver = new ChromeDriver();
+        } else if (browser.equals("firefox")) {
+            WebDriverManager.firefoxdriver().setup();
+            driver = new FirefoxDriver();
+        } else if (browser.equals("edge")) {
+            WebDriverManager.edgedriver().setup();
+            driver = new EdgeDriver();
+        }
 
         String url = "https://demoqa.com/automation-practice-form";
 
@@ -64,12 +68,12 @@ public class SeleniumWebDriverManagerTests {
         email.sendKeys(userEmail);
         Thread.sleep(2000);
 
-        WebElement male = driver.findElement(By.cssSelector("label[for='gender-radio-1']"));
+        WebElement male = driver.findElement(By.cssSelector("label[for='gender-radio-2']"));
         male.click();
         Thread.sleep(2000);
 
         WebElement phone = driver.findElement(By.cssSelector("input[id='userNumber']"));
-        String userPhone = "8-888-888-88-88";
+        String userPhone = "8888888888";
         phone.sendKeys(userPhone);
         Thread.sleep(2000);
 
@@ -93,11 +97,11 @@ public class SeleniumWebDriverManagerTests {
         yearOfBirth.click();
         Thread.sleep(1000);
 
-        WebElement dayOfBirth = driver.findElement(By.className("react-datepicker__day react-datepicker__day--006"));
+        WebElement dayOfBirth = driver.findElement(By.xpath("//*[@class='react-datepicker__day react-datepicker__day--006']"));
         dayOfBirth.click();
         Thread.sleep(1000);
 
-        WebElement subject = driver.findElement(By.className("subjects-auto-complete__placeholder css-1wa3eu0-placeholder"));
+        WebElement subject = driver.findElement(By.xpath("//div[@id='subjectsContainer']/div/div"));
         String userSubject = "Geology";
         subject.sendKeys(userSubject);
         Thread.sleep(2000);
@@ -107,7 +111,7 @@ public class SeleniumWebDriverManagerTests {
         Thread.sleep(2000);
 
         WebElement picture = driver.findElement(By.cssSelector("input[id='uploadPicture']"));
-        File image = new File("/images.jpg");
+        File image = new File("src/test/java/ru/academits/images.jpg");
         picture.sendKeys(image.getAbsolutePath());
 
         WebElement currentAddress = driver.findElement(By.cssSelector("textarea[id='currentAddress']"));
@@ -124,31 +128,34 @@ public class SeleniumWebDriverManagerTests {
         String userCity = "Delhi";
         city.sendKeys(userCity);
         city.sendKeys(Keys.ENTER);
+        Thread.sleep(3000);
 
-//        JavascriptExecutor js;
-//        js.executeScript("window.scrollTo()");
-//
-//        WebElement submit = driver.findElement(By.cssSelector("button[id='submit']"));
-//        submit.click();
-//        Thread.sleep(2000);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
 
-        Assertions.assertEquals(userFirstName + " " + userLastName,
-        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr/td[2]")));
+        WebElement submit = driver.findElement(By.id("submit"));
+        submit.click();
+        Thread.sleep(2000);
 
-        Assertions.assertEquals(userEmail,
-        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[2]/td[2]")));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.className("table-responsive")));
 
-        Assertions.assertEquals(userPhone,
-        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[4]/td[2]")));
+        SoftAssertions softAssert = new SoftAssertions();
 
-        Assertions.assertEquals(userSubject,
-        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[6]/td[2]")));
+        softAssert.assertThat(userFirstName + " " + userLastName).isEqualTo(driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr/td[2]")));
 
-        Assertions.assertEquals(userCurrentAddress,
-        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[9]/td[2]")));
+        softAssert.assertThat(userEmail).isEqualTo(driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[2]/td[2]")));
 
-        Assertions.assertEquals(userState + " " + userCity,
-        driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[10]/td[2]")));
+        softAssert.assertThat(userPhone).isEqualTo(driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[4]/td[2]")));
+
+        softAssert.assertThat(userSubject).isEqualTo(driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[6]/td[2]")));
+
+        softAssert.assertThat(userCurrentAddress).isEqualTo(driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[9]/td[2]")));
+
+        softAssert.assertThat(userState + " " + userCity).isEqualTo(driver.findElement(By.xpath("//*[@class='table-responsive']/table/tbody/tr[10]/td[2]")));
+
+        softAssert.assertAll();
 
         driver.quit();
     }
