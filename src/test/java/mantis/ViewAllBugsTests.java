@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLOutput;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +63,9 @@ public class ViewAllBugsTests {
 
     @Test
     public void updateRealNameTest() {
-        String newRealName = "new real name";
+
+        String currentTimestamp = String.valueOf(new Timestamp(new Date().getTime()));
+        String newRealName = "new_real_name_" + currentTimestamp;
 
         Response responseUpdateRealName = RestAssured
                 .given()
